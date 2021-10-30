@@ -23,5 +23,10 @@ services: #Nos permite levantar varios contenedores preconfigurados de una sola 
     environment:
       EMQX_NAME: ioticos-gl
       EMQX_HOST: 127.0.0.1
+
+      TZ: "America/Santiago"
+      
+      # Default Dash Pass
+      EMQX_DASHBOARD__DEFAULT_USER__PASSWORD: "emqxdashpass"
       #listener.tcp.external.max_connections
       EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000
