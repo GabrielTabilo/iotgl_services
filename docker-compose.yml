@@ -1,32 +1,46 @@
 version: "3.8" #Versón de la estandarización de docker-compose
 
-volumes:
-  vol-emqx-data:
-    name: foo-emqx-data
-  vol-emqx-etc:
-    name: foo-emqx-etc
-  vol-emqx-log:
-    name: foo-emqx-log
+#volumes:
+#  vol-emqx-data:
+#    name: foo-emqx-data
+#  vol-emqx-etc:
+#    name: foo-emqx-etc
+#  vol-emqx-log:
+#    name: foo-emqx-log
 
 services: #Nos permite levantar varios contenedores preconfigurados de una sola vez (para no tener que escribir un comando "docker run" gigante)
-  emqx:
-    container_name: emqx
-    image: emqx/emqx:4.2.3 #imagen que se va a utilizar, puede ser una versión especifica
-    restart: always #Si se cae el servicio se va a levantar de nuevo automáticamente
-    ports:
-      - 18083:18083 #Dashboard Web de Emqx
-      - 8083:8083 #Permite a un sitio web conectarse a MQTT a través del WS
-    volumes:
-      - vol-emqx-data:/opt/emqx/data
-      - vol-emqx-etc:/opt/emqx/etc
-      - vol-emqx-log:/opt/emqx/log
+  
+  mongo:
+    container_name: mongo
+    image: mongo:4.4
+    restart: always
     environment:
-      EMQX_NAME: ioticos-gl
-      EMQX_HOST: 127.0.0.1
-
       TZ: "America/Santiago"
-      
-      # Default Dash Pass
-      EMQX_DASHBOARD__DEFAULT_USER__PASSWORD: "emqxdashpass"
-      #listener.tcp.external.max_connections
-      EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000
+      MONGO_INITDB_ROOT_USERNAME: 'devuser' #credenciales de mongo
+      MONGO_INITDB_ROOT_PASSWORD: "devpassword"
+    volumes:
+      - ./mongodata:/data/db #persistencia de datos
+    ports:
+      - 27017:27017 #puerto estandar de mongo 27017
+#  
+#  emqx:
+#    container_name: emqx
+#    image: emqx/emqx:4.2.3 #imagen que se va a utilizar, puede ser una versión especifica
+#    restart: always #Si se cae el servicio se va a levantar de nuevo automáticamente
+#    ports:
+#      - 18083:18083 #Dashboard Web de Emqx
+#      - 8083:8083 #Permite a un sitio web conectarse a MQTT a través del WS
+#    volumes:
+#      - vol-emqx-data:/opt/emqx/data
+#      - vol-emqx-etc:/opt/emqx/etc
+#      - vol-emqx-log:/opt/emqx/log
+#    environment:
+#      EMQX_NAME: ioticos-gl
+#      EMQX_HOST: 127.0.0.1
+#
+#      TZ: "America/Santiago"
+#      
+#      # Default Dash Pass
+#      EMQX_DASHBOARD__DEFAULT_USER__PASSWORD: "emqxdashpass"
+#      #listener.tcp.external.max_connections
+#      EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000
