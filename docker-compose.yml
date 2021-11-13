@@ -29,7 +29,12 @@ services: #Nos permite levantar varios contenedores preconfigurados de una sola 
     restart: always #Si se cae el servicio se va a levantar de nuevo automáticamente
     ports:
       - 18083:18083 #Dashboard Web de Emqx
+      - 18084:18084
+      - 1883:1883
+      - 8883:8883
       - 8083:8083 #Permite a un sitio web conectarse a MQTT a través del WS
+      - 8084:8084
+      - 8085:8081
   #  volumes:
   #    - vol-emqx-data:/opt/emqx/data
   #    - vol-emqx-etc:/opt/emqx/etc
@@ -48,6 +53,7 @@ services: #Nos permite levantar varios contenedores preconfigurados de una sola 
       EMQX_DASHBOARD__DEFAULT_USER__PASSWORD: "emqxdashpass"
 
       EMQX_ALLOW_ANONYMOUS: "false"
+      EMQX_NOMATCH: "deny"
       
       #Mongo Connection
       EMQX_AUTH__MONGO__TYPE: single
@@ -72,5 +78,15 @@ services: #Nos permite levantar varios contenedores preconfigurados de una sola 
       EMQX_AUTH__MONGO__AUTH_QUERY__PASSWORD_HASH: plain
       EMQX_AUTH__MONGO__AUTH_QUERY__PASSWORD_FIELD: "password"
       EMQX_AUTH__MONGO__AUTH_QUERY__SELECTOR: "username=%u"
+
+      #Enable ACL Query
+      #Access control list
+
+      EMQX_AUTH__MONGO__ACL_QUERY: "on"
+      EMQX_AUTH__MONGO__ACL_QUERY__COLLECTION: "emqxauthrules"
+      EMQX_AUTH__MONGO__ACL_QUERY__SELECTOR: "username=%u"
+
+      EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard, emqx_auth_mongo"
+                           #reconección #men retenidos #api emqx      #dash emqx      #emqx mongo
       #listener.tcp.external.max_connections
       EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000
